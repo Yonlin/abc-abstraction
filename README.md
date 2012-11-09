@@ -17,21 +17,22 @@ All of the files in the root directory are essentially examples, although I have
 In general, though typical usage might look like this: 
 
 ```actionscript
-var swfData:ByteArray = urlLoader.data as ByteArray // these are the bytes of an SWF
-var _swf:SWF = SWF.readFrom(swfData)
-for each(var t:Tag in _swf.tags){ // there might only be one DoABCTag per file, or tons of them!
-	if(t is DoABCTag){
-		var abct:DoABCTag = t as DoABCTag
-		abct.abc // this is an ABC instance that you can change around
-		
-		// do stuff here
-	}
-}
+import abc.*
+import swf.*
 
-var new_bytes:ByteArray = _swf.toByteArray()
-(addChild(new Loader()) as Loader).loadBytes(new_bytes) // this loads the SWF with modified bytecode
+var swfData:ByteArray = loaderInfo.bytes // these are the bytes of /this/ SWF
+var $swf:SWF = SWF.readFrom(swfData)
+var $abc:ABC = $swf.abcs[0] // this is an ABC instance that you can change around
+
+// do stuff here.  for example, print the bytecode
+trace($abc.inpect)
+
+var newBytes:ByteArray = $swf.toByteArray()
+addChild(new Loader)['loadBytes'](newBytes) // this loads the SWF with modified (or not, in this case) bytecode
 
 ```
+
+Note that the above example prints its own bytecode, then runs ......
 
 ## Bugs?
 

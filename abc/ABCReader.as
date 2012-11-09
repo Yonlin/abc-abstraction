@@ -172,7 +172,7 @@ package abc {
 		private function _readStringPool():void {
 			var string_count:int = _abc.string_count = readU30()
 			if(string_count){
-				string_pool = _abc.string_pool = ['\0']
+				string_pool = _abc.string_pool = [{ toString: function():String { return '' }}] //checkme
 				//string_pool[0] = ''
 				
 				for(var i:int = 1; i < string_count; i++){
@@ -182,7 +182,7 @@ package abc {
 					string_pool[i] = str
 				}
 			} else {
-				string_pool = ['']
+				string_pool = [{}]
 			}
 		}
 		
@@ -657,10 +657,10 @@ package abc {
 					break
 				
 				default:
-					if(opcode_info.operands == 0){
+					if(opcode_info && opcode_info.operands == 0){
 						instr = new Instruction(opcode, null)
 					} else {
-						trace('unknown opcode')
+						trace('unknown opcode', opcode, '0x' + opcode.toString(16))
 					}
 					break
 			}

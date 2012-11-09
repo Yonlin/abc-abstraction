@@ -18,6 +18,12 @@ package swf.tags {
 				case End:
 					tag = new EndTag
 					break
+				/*case ShowFrame:
+					tag = new ShowFrameTag
+					break
+				case DefineSceneAndFrameLabelData:
+					tag = new DefineSceneAndFrameLabelDataTag
+					break*/
 				case FileAttributes:
 					tag = new FileAttributesTag
 					break
@@ -57,11 +63,12 @@ package swf.tags {
 		 * Tags shouldn't supply their own tag header.  SWFWriter writes those.
 		 */
 		public function toByteArray():ByteArray {
-			return bytes
+			return bytes ? bytes : new ByteArray
 		}
 		
 		public static const
 			End					:uint = 0,
+			ShowFrame			:uint = 1,
 			SetBackgroundColor	:uint = 9,
 			Protect				:uint = 24,
 			EnableDebugger		:uint = 58,
@@ -76,6 +83,7 @@ package swf.tags {
 			DoABC				:uint = 72,
 			DoABC2				:uint = 82,
 			DoAction			:uint = 12,
+			DefineSceneAndFrameLabelData :uint = 86,
 			DefineBinaryData	:uint = 87,
 			SymbolClass			:uint = 76
 	}

@@ -573,7 +573,7 @@ package swf {
 			var nextTagPosition:uint = bytes.position + tagLength
 			
 			// read the data in the tag (if supported)
-			var moreTags:Boolean = readTagData(tagLength, currentTagPosition, nextTagPosition)
+			var moreTags:Boolean = readTagData(tagLength)
 			
 			if (!moreTags) return false // end tag
 			
@@ -594,17 +594,17 @@ package swf {
 		 * @return false if the tag read is the END tag;
 		 * true if more tags should be present in the file.
 		 */
-		private function readTagData(tagLength:uint, start:uint, end:uint):Boolean {
+		private function readTagData(tagLength:uint):Boolean {
 			var tag:Tag = Tag.fromCode(currentTag)
 			tag.readFrom(this, tagLength)
 			_swf.tags.push(tag)
 			
 			// handle each tag individually based on
 			// it's tag id
-			switch (currentTag) {
-				case TAG_ID_EOF:
+			if(currentTag == TAG_ID_EOF){
 					return false // end of file
-					break
+			} else {
+				return true
 			}
 			
 			// not last tag, continue reading

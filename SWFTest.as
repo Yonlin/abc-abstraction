@@ -29,8 +29,8 @@ package {
 			var _swf:SWF = SWF.readFrom(swfData)
 			trace('hmm!!')
 			for each(var t:Tag in _swf.tags){
-				if(t is DoABCTag){
-					var abct:DoABCTag = t as DoABCTag
+				if(t is DoABC2Tag){
+					var abct:DoABC2Tag = t as DoABC2Tag
 					trace(new ABCInspector(abct.abc).inspect)
 				}
 			}

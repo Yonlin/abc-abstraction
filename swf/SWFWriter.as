@@ -81,10 +81,11 @@ package swf {
 					bytes.writeUnsignedInt(tagLen)
 				} else {
 					tagHeader |= tagLen
+					
 					bytes.writeShort(tagHeader)
 				}
 				
-				bytes.writeBytes(tagBytes)
+				if(tagBytes.length > 0 ) bytes.writeBytes(tagBytes)
 			} 
 			return bytes
 		}

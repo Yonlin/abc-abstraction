@@ -144,7 +144,6 @@ package abc {
 		private function _establishTrait(t:Trait):void {
 			if(_estObjs[t]) return
 			_estObjs[t] = t
-			
 			_establishMultiname(t.name)
 			switch(t.type){
 				case Trait.Slot:
@@ -461,6 +460,7 @@ package abc {
 		
 		private function _establishNamespace(n:ABCNamespace):void {
 			_estObjs[n] = n
+			_establishString(n.name)
 		}
 		
 		private function _establishNSSet(nss:Array):void {
@@ -491,7 +491,7 @@ package abc {
 		private function _write():void {
 			//trace('starting write')
 			_bytes = new ByteArray
-			_bytes.endian = Endian.LITTLE_ENDIAN // for avmshell/rawabc
+			//_bytes.endian = Endian.LITTLE_ENDIAN // for avmshell/rawabc
 			/*if(_abc.abcname){
 				_bytes.writeUnsignedInt(_abc.flags)
 				trace(_bytes.position)
@@ -503,12 +503,14 @@ package abc {
 			
 			//_writeU16(_abc.minor_version)
 			//_writeU16(_abc.major_version)
-			//_bytes.writeByte(0x0)
-			//_bytes.writeByte(0x10)
-			//_bytes.writeByte(0x0)
-			//_bytes.writeByte(0x2e)
-			_bytes.writeShort(_abc.minor_version)
-			_bytes.writeShort(_abc.major_version)
+			_bytes.writeByte(0x0)
+			_bytes.writeByte(0x10)
+			_bytes.writeByte(0x0)
+			_bytes.writeByte(0x2e)
+			//----ByteUtils.writeU16(_bytes, _abc.minor_version)
+			//----ByteUtils.writeU16(_bytes, _abc.major_version)
+			//_bytes.writeShort(_abc.minor_version)
+			//_bytes.writeShort(_abc.major_version)
 			
 			if(!_rawABC) _bytes.writeByte(0) // appears to be unused (?)
 			
@@ -519,6 +521,14 @@ package abc {
 			//trace('starting rest')
 			_writeRest()
 			_bytes.position = 0
+		}
+		
+		private function _spi(s:String):int {
+			var index:int = _abc.string_pool.indexOf(s)
+			//if(index < 10) trace('spi', index, '->' + s + '<-')
+			//if(s.toString() == '') return 0
+			if(index == -1) throw 'wtf, ' + s
+			return index
 		}
 		
 		private function _writeConstantPool():void {
@@ -589,7 +599,7 @@ package abc {
 					//if(namespace.name == '' && namespace.kind == ABC.PackageNamespace){
 					//	_writeU30(2)
 					//} else {
-						_writeU30(_abc.string_pool.indexOf(namespace.name))
+						_writeU30(_spi(namespace.name))
 					//}
 				}
 			}
@@ -621,12 +631,12 @@ package abc {
 						case Multiname.QName:
 						case Multiname.QNameA:
 							_writeU30(_abc.namespace_pool.indexOf(m.ns))
-							_writeU30(_abc.string_pool.indexOf(m.name))
+							_writeU30(_spi(m.name))
 							break
 						
 						case Multiname.RTQName:
 						case Multiname.RTQNameA:
-							_writeU30(_abc.string_pool.indexOf(m.name))
+							_writeU30(_spi(m.name))
 							break
 						
 						case Multiname.RTQNameL:
@@ -636,7 +646,7 @@ package abc {
 						
 						case Multiname.Multiname:
 						case Multiname.MultinameA:
-							_writeU30(_abc.string_pool.indexOf(m.name))
+							_writeU30(_spi(m.name))
 							_writeU30(_abc.ns_set_pool.indexOf(m.nsSet))
 							break
 						
@@ -676,7 +686,7 @@ package abc {
 					_writeU30(index)
 				}
 				
-				_writeU30(_abc.string_pool.indexOf(mi.name))
+				_writeU30(_spi(mi.name))
 				_bytes.writeByte(mi.flags)
 				
 				if(MethodInfo.hasOptionalFlag(mi.flags)){
@@ -690,7 +700,7 @@ package abc {
 				
 				if(MethodInfo.hasParamNamesFlag(mi.flags)){
 					for(j = 0; j < mi.paramNames.length; j++){
-						_writeU30(_abc.string_pool.indexOf(mi.paramNames[j]))
+						_writeU30(_spi(mi.paramNames[j]))
 					}
 				}
 			}
@@ -699,11 +709,11 @@ package abc {
 			_writeU30(metadata_count)
 			for(i = 0; i < metadata_count; i++){
 				var md:Metadata = _abc.metadata_pool[i]
-				_writeU30(_abc.string_pool.indexOf(md.name))
+				_writeU30(_spi(md.name))
 				_writeU30(md.data.length)
 				for(j = 0; j < md.data.length; j++){
-					_writeU30(_abc.string_pool.indexOf(md.data[j].key))
-					_writeU30(_abc.string_pool.indexOf(md.data[j].value))
+					_writeU30(_spi(md.data[j].key))
+					_writeU30(_spi(md.data[j].value))
 				}
 			}
 			
@@ -775,8 +785,8 @@ package abc {
 					_writeU30(err.from)
 					_writeU30(err.to)
 					_writeU30(err.target)
-					_writeU30(_abc.string_pool.indexOf(err.exc_type))
-					_writeU30(_abc.string_pool.indexOf(err.var_name))
+					_writeU30(_spi(err.exc_type))
+					_writeU30(_spi(err.var_name))
 				}
 				_writeU30(mbi.traits.length)
 				_writeTraits(mbi.traits)
@@ -826,7 +836,7 @@ package abc {
 			switch(opcode){
 				case Op.debugfile:
 				case Op.pushstring:
-					ByteUtils.writeU30(bytes, _abc.string_pool.indexOf(operands[0]))
+					ByteUtils.writeU30(bytes, _spi(operands[0]))
 					break
 				case Op.pushnamespace:
 					ByteUtils.writeU30(bytes, _abc.namespace_pool.indexOf(operands[0]))
@@ -1052,7 +1062,7 @@ package abc {
 					break
 				
 				case ABC.Utf8:
-					return _abc.string_pool.indexOf(val)
+					return _spi(val)
 					break
 				
 				case ABC.True:

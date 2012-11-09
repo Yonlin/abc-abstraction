@@ -1,5 +1,5 @@
 package abc {
-	import flash.utils.*;
+	import flash.utils.*
 	
 	/**
 	 * An abstraction of ActionScript bytecode, sometimes called action block code.  Its definitions 
@@ -67,6 +67,22 @@ package abc {
 			// a constructor would have too many arguments
 		}
 		
+		public function initPools():void { // TODO: move this to the constructor and modify ABCReader to reflect this init
+			int_pool = [0]
+			uint_pool = [0]
+			double_pool = [0.0]
+			string_pool = [{ toString: function():String { return '' }}]
+			namespace_pool = [new ABCNamespace(ABC.PackageNamespace, '')]
+			ns_set_pool = [[new ABCNamespace(ABC.PackageNamespace, '')]]
+			multiname_pool = [Multiname.Any]
+			method_info_pool = []
+			metadata_pool = []
+			instance_info_pool = []
+			class_info_pool = []
+			script_info_pool = []
+			method_body_info_pool = []
+		}
+		
 		public static function readFrom(bytes:ByteArray):ABC {
 			return new ABCReader(bytes).abc
 		}
@@ -75,12 +91,8 @@ package abc {
 			return '[ABC ' + abcname + ' (' + length + ' bytes, ' + method_body_info_pool.length + ' functions)]'
 		}
 		
-		public function get inpect():String {
+		public function get inspect():String {
 			return new ABCInspector(this).inspect
-		}
-		
-		public function get constant_pool():Array {
-			return null // or object with named field for each type of pool
 		}
 	}
 }

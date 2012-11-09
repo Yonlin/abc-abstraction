@@ -51,9 +51,9 @@ package {
 			var self:SWF = SWF.readFrom(loaderInfo.bytes)
 			var code:ABC
 			for each(var tag:Tag in self.tags){
-				if(tag is DoABCTag && (tag as DoABCTag).name == 'FlashFirebugTest'){
-					trace('abcname: ', (tag as DoABCTag).name)
-					code = (tag as DoABCTag).abc
+				if(tag is DoABC2Tag && (tag as DoABC2Tag).name == 'FlashFirebugTest'){
+					trace('abcname: ', (tag as DoABC2Tag).name)
+					code = (tag as DoABC2Tag).abc
 				}
 			}
 			
@@ -65,10 +65,10 @@ package {
 		}
 		
 		private function _guardConstructors(s:SWF):void {
-			var abcTags:Vector.<DoABCTag> = new Vector.<DoABCTag>
-			for each(var tag:Tag in s.tags) if(tag is DoABCTag) abcTags.push(tag)
+			var abcTags:Vector.<DoABC2Tag> = new Vector.<DoABC2Tag>
+			for each(var tag:Tag in s.tags) if(tag is DoABC2Tag) abcTags.push(tag)
 			
-			for each(var abcTag:DoABCTag in abcTags){
+			for each(var abcTag:DoABC2Tag in abcTags){
 				var code:ABC = abcTag.abc
 				for each(var mbi:MethodBodyInfo in code.method_body_info_pool){
 					_guardConstructInstructions(mbi)

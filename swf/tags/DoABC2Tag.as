@@ -11,6 +11,7 @@ package swf.tags {
 			flags	:uint
 		
 		public function DoABC2Tag(flags:uint = 0, name:String = '', abc:ABC = null){
+			super(null)
 			this.flags = flags
 			this.name = name
 			_abc = abc
@@ -31,6 +32,7 @@ package swf.tags {
 		}
 		
 		override public function toByteArray():ByteArray {
+			//trace('writing DoABC2', _abc, _abc.string_pool, _abc.method_body_info_pool)
 			var bytes:ByteArray = new ByteArray
 			bytes.endian = Endian.LITTLE_ENDIAN
 			bytes.writeUnsignedInt(flags)

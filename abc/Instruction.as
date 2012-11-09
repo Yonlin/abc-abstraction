@@ -273,6 +273,7 @@ package abc {
 			{ name: 'getlocal_1',				opcode: 0xd1, operands: 0, stack:  1, scope:  0 },
 			{ name: 'getlocal_2',				opcode: 0xd2, operands: 0, stack:  1, scope:  0 },
 			{ name: 'getlocal_3',				opcode: 0xd3, operands: 0, stack:  1, scope:  0 },
+			{ name: 'getouterscope',			opcode: 0x67, operands: 0, stack:  1, scope:  0 },
 			{ name: 'getproperty',				opcode: 0x66, operands: 1, stack:  0, scope:  0 }, // variable stack
 			{ name: 'getscopeobject',			opcode: 0x65, operands: 1, stack:  1, scope:  0 },
 			{ name: 'getslot',					opcode: 0x6c, operands: 1, stack:  0, scope:  0 },
