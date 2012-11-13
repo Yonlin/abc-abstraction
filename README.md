@@ -25,7 +25,7 @@ var $swf:SWF = SWF.readFrom(swfData)
 var $abc:ABC = $swf.abcs[0] // this is an ABC instance that you can change around
 
 // do stuff here.  for example, print the bytecode
-trace($abc.inpect)
+trace($abc.inspect)
 
 var newBytes:ByteArray = $swf.toByteArray()
 addChild(new Loader)['loadBytes'](newBytes) // this loads the SWF with modified (or not, in this case) bytecode
